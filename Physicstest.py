@@ -2,12 +2,14 @@ import math
 import pygame
 from pygame import gfxdraw
 
+
+#röd
 p1y = float(200) #y position
 p1x = float(400) #x position
 # p1dir = float(90) # angle 0 being up 
 p1speedx = float(1.2) #x fart
 p1speedy = float(0) #y fart
-p1mass = int(10000000000000) #massa
+p1mass = int(10000000000) #massa
 
 f1 = int()
 
@@ -18,10 +20,11 @@ dist = float()
 ang1 = float()
 ang2 = float()
 
+# blå
 p2y = float(400)
 p2x = float(400)
 # p2dir = float(270)
-p2speedx = float(-1.2)
+p2speedx = float()
 p2speedy = float(0)
 p2mass = int(10000000000000)
 
