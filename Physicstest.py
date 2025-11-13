@@ -9,22 +9,22 @@ p1x = float(400) #x position
 # p1dir = float(90) # angle 0 being up 
 p1speedx = float(1.2) #x fart
 p1speedy = float(0) #y fart
-p1mass = int(10000000000) #massa
+p1mass = int(10000000000000) #massa
 
 f1 = int()
 
 # sin x cos y
 
 KonstG = 6.674*float(10**-11) #konstanten G
-dist = float()
-ang1 = float()
+dist = float() #distansen mellan planeterna
+ang1 = float() #vinklar mellan 
 ang2 = float()
 
 # blå
 p2y = float(400)
 p2x = float(400)
 # p2dir = float(270)
-p2speedx = float()
+p2speedx = float(-1.2)
 p2speedy = float(0)
 p2mass = int(10000000000000)
 
@@ -54,6 +54,7 @@ while running:
     # renderering
     i = 0
     j = 0
+    #ritar bakgrunden (oviktigt)
     while i < screenwidth:
         while j < screenheight:
             coloureq = int(255-(0.001*math.hypot(abs(i-400),abs(j-400))**2))
@@ -65,8 +66,9 @@ while running:
             j += 6
         i += 6
         j = 0
-    pygame.draw.circle(screen, "red", (p1x, p1y), 30)
-    pygame.draw.circle(screen, "blue", (p2x, p2y), 30)
+    
+    pygame.draw.circle(screen, "red", (p1x, p1y), 30) #ritar cirkel 1
+    pygame.draw.circle(screen, "blue", (p2x, p2y), 30) #ritar cirkel 2
 
     # updaterar displayen
     pygame.display.flip()
@@ -74,12 +76,12 @@ while running:
     # uträkningar
 
     dist = math.hypot((p1x-p2x),(p1y-p2y)) #hittar distansen mellan planeterna
-    ang1 = math.atan2((p2y-p1y),(p2x-p1x)) #hittar vinkeln mellan dem
+    ang1 = math.atan2((p2y-p1y),(p2x-p1x)) #hittar vinkeln mellan dem i förhålande till planet 1
     f1 = (KonstG*p1mass*p2mass)/dist**2 #kraften mellan planeterna
     if dist <= 60: #gör så att planeterna studsar
         f1 *= -1
     
-    p1speedx = p1speedx + math.cos(ang1)*f1/p1mass #räknar ut farterna i x och y
+    p1speedx = p1speedx + math.cos(ang1)*f1/p1mass #räknar ut farterna för planet 1 i x och y
     p1speedy = p1speedy + math.sin(ang1)*f1/p1mass
     '''if p1x >= 770 or p1x <= 30: #gör så att planeten studsar på väggarna
         p1speedx *= -1
@@ -88,24 +90,26 @@ while running:
     p1x = p1x + p1speedx #ändrar positionen med farten
     p1y = p1y + p1speedy
 
-    ang2 = math.atan2((p1y-p2y),(p1x-p2x))
-    p2speedx = p2speedx + math.cos(ang2)*f1/p2mass
+    ang2 = math.atan2((p1y-p2y),(p1x-p2x)) #räknar ut vinkeln mellan planeterna i förhållande till planet 2
+    p2speedx = p2speedx + math.cos(ang2)*f1/p2mass #räknar ut farterna för planet 2 i x och y
     p2speedy = p2speedy + math.sin(ang2)*f1/p2mass
     '''if p2x >= 770 or p2x <= 30:
         p2speedx *= -1
     if p2y >= 770 or p2y <= 30:
         p2speedy *= -1'''
-    p2x = p2x + p2speedx
+    p2x = p2x + p2speedx #ändrar positionen med farten
     p2y = p2y + p2speedy
 
-    pixelx = pixelx - p2x
+    pixelx = pixelx - p2x #gör så att bakgrunden flyttar på sig
     pixely = pixely - p2y
 
-    p1x = p1x + 400 - p2x
+    p1x = p1x + 400 - p2x #ändrar planeternas position så att den blåa är i mitten
     p1y = p1y + 400 - p2y
     p2x = 400
     p2y = 400
+
     clock.tick(60)  # 60 fps
+
 print(dist)
 print(f1)
 print(math.degrees(ang1))
