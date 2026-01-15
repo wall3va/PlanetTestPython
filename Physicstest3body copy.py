@@ -3,78 +3,70 @@ import pygame
 from pygame import gfxdraw
 
 dictionary = dict()
-numberofplanets = int(3)
-#röd
-dictionary["p1y"] = float(200) #y position
-dictionary["p1x"] = float(400) #x position
-# p1dir = float(90) # angle 0 being up 
-dictionary["p1speedx"] = float(1.2) #x fart
-dictionary["p1speedy"] = float(0) #y fart
-dictionary["p1mass"] = int(10000000000000) #massa
+dictionary["numberofplanets"] = int(0)
 
 f = float()
 
-#grön
-dictionary["p3y"] = float(400)
-dictionary["p3x"] = float(200)
-dictionary["p3speedx"] = float(0)
-dictionary["p3speedy"] = float(-1.2)
-dictionary["p3mass"] = int(10000000000000)
+#funktionen som skapar planeter
+def planet_maker(dictionary1, x, y, speedx, speedy, mass, colour):
+    dictionary1 ["numberofplanets"] += 1
+    planetnumber = dictionary1 ["numberofplanets"]
+    print(planetnumber)
+    dictionary1 [f"p{planetnumber}x"] = x
+    dictionary1 [f"p{planetnumber}y"] = y
+    dictionary1 [f"p{planetnumber}speedx"] = speedx
+    dictionary1 [f"p{planetnumber}speedy"] = speedy
+    dictionary1 [f"p{planetnumber}mass"] = mass
+    dictionary1 [f"p{planetnumber}colour"] = colour
+    return (dictionary1)
 
-# sin x cos y
+#skapar planeterna (hovra över funktionen för förklaring)
+dictionary = planet_maker(dictionary, 200, 600, 0, 0, 100000000000, "red")
+dictionary = planet_maker(dictionary, 800, 400, -1.2, 0, 10000000000000, "green")
+dictionary = planet_maker(dictionary, 0, 600, 0, 1, 100000000000, "blue")
+dictionary = planet_maker(dictionary, 400, 600, 0, -1, 100000000000, "yellow")
 
 KonstG = 6.674*float(10**-11) #konstanten G
-ang1 = float()
-ang2 = float()
-
-# blå
-dictionary["p2y"] = float(400)
-dictionary["p2x"] = float(400)
-# p2dir = float(270)
-dictionary["p2speedx"] = float(-1.2)
-dictionary["p2speedy"] = float(0)
-dictionary["p2mass"] = int(10000000000000)
 
 pixelx = 0
 pixely = 0
 
-factorial2 = int(1)
-for z in range(1, (numberofplanets-2)+1):
-    factorial2 *= z
 
-factorial = int(1)
-for y in range(1, numberofplanets + 1):
-    factorial *= y
 
 screenwidth = 800
 screenheight = 800
 
-def planet_calc(functiondictionary, a, b):
+#funktionen som hittar f mellan 2 planeter
+def planet_calc(fdict, a, b):
     a = str(a)
     b = str(b)
-    dist = math.hypot((functiondictionary[f"p{a}x"]-functiondictionary[f"p{b}x"]),(functiondictionary[f"p{a}y"]-functiondictionary[f"p{b}y"])) #hittar distansen mellan planeterna
-    ang1 = math.atan2((functiondictionary[f"p{b}y"]-functiondictionary[f"p{a}y"]),(functiondictionary[f"p{b}x"]-functiondictionary[f"p{a}x"])) #hittar vinkeln mellan dem i förhålande till planet 1
-    ang2 = math.atan2((functiondictionary[f"p{a}y"]-functiondictionary[f"p{b}y"]),(functiondictionary[f"p{a}x"]-functiondictionary[f"p{b}x"])) #räknar ut vinkeln mellan planeterna i förhållande till planet 2
-    f = (KonstG*functiondictionary[f"p{a}mass"]*functiondictionary[f"p{b}mass"])/dist**2 #kraften mellan planeterna
-    if dist <= 60: #gör så att planeterna studsar
+    dist = math.hypot((fdict[f"p{a}x"]-fdict[f"p{b}x"]),(fdict[f"p{a}y"]-fdict[f"p{b}y"])) #hittar distansen mellan planeterna
+    ang1 = math.atan2((fdict[f"p{b}y"]-fdict[f"p{a}y"]),(fdict[f"p{b}x"]-fdict[f"p{a}x"])) #hittar vinkeln mellan dem i förhålande till planet 1
+    ang2 = math.atan2((fdict[f"p{a}y"]-fdict[f"p{b}y"]),(fdict[f"p{a}x"]-fdict[f"p{b}x"])) #räknar ut vinkeln mellan planeterna i förhållande till planet 2
+    f = (KonstG*fdict[f"p{a}mass"]*fdict[f"p{b}mass"])/dist**2 #kraften mellan planeterna
+    if dist <= 60: #gör så att planeterna studsar på varandra
         f *= -1
 
-    functiondictionary[f"p{a}speedx"] = functiondictionary[f"p{a}speedx"] + math.cos(ang1)*f/functiondictionary[f"p{a}mass"] #räknar ut farterna för planet 1 i x och y
-    functiondictionary[f"p{a}speedy"] = functiondictionary[f"p{a}speedy"] + math.sin(ang1)*f/functiondictionary[f"p{a}mass"]
-    functiondictionary[f"p{b}speedx"] = functiondictionary[f"p{b}speedx"] + math.cos(ang2)*f/functiondictionary[f"p{b}mass"] #räknar ut farterna för planet 2 i x och y
-    functiondictionary[f"p{b}speedy"] = functiondictionary[f"p{b}speedy"] + math.sin(ang2)*f/functiondictionary[f"p{b}mass"]
+    fdict[f"p{a}speedx"] = fdict[f"p{a}speedx"] + math.cos(ang1)*f/fdict[f"p{a}mass"] #räknar ut farterna för planet 1 i x och y
+    fdict[f"p{a}speedy"] = fdict[f"p{a}speedy"] + math.sin(ang1)*f/fdict[f"p{a}mass"]
+    fdict[f"p{b}speedx"] = fdict[f"p{b}speedx"] + math.cos(ang2)*f/fdict[f"p{b}mass"] #räknar ut farterna för planet 2 i x och y
+    fdict[f"p{b}speedy"] = fdict[f"p{b}speedy"] + math.sin(ang2)*f/fdict[f"p{b}mass"]
 
-    '''if p1x >= 770 or p1x <= 30: #gör så att planeten studsar på väggarna
-        p1speedx *= -1
-    if p1y >= 770 or p1y <= 30:
-        p1speedy *= -1'''
-    '''if p2x >= 770 or p2x <= 30:
-        p2speedx *= -1
-    if p2y >= 770 or p2y <= 30:
-        p2speedy *= -1'''
-    return (functiondictionary)
-    
+    return (fdict)
+def planet_draw(numb, drawdict):
+    pygame.draw.circle(screen, drawdict[f"p{numb}colour"], (drawdict[f"p{numb}x"], drawdict[f"p{numb}y"]), 30)
+
 coloureq = 0
+
+
+factorial2 = int(1)
+for z in range(1, (dictionary["numberofplanets"]-2)+1):
+    factorial2 *= z
+
+
+factorial = int(1)
+for y in range(1, dictionary["numberofplanets"] + 1):
+    factorial *= y
 
 # pygame setup
 pygame.init()
@@ -91,18 +83,12 @@ while running:
     # bakgrundsfärg
     screen.fill("black")
 
-    pixelx = pixelx - dictionary["p1x"]
-    pixely = pixely - dictionary["p1y"]
-
-    pygame.draw.circle(screen, "red", (dictionary["p1x"], dictionary["p1y"]), 30)
-    pygame.draw.circle(screen, "blue", (dictionary["p2x"], dictionary["p2y"]), 30)
-    pygame.draw.circle(screen, "green", (dictionary["p3x"], dictionary["p3y"]), 30)
-
     i = 0
     j = 0
-    while i < screenwidth:
+
+    while i < screenwidth: #ritar bakgrunden
         while j < screenheight:
-            coloureq = int(255-(0.001*math.hypot(abs(i-400),abs(j-400))**2))
+            coloureq = int(255-(0.001*math.hypot(abs(i-(screenwidth/2)),abs(j-(screenheight/2)))**2))
             if coloureq < 0:
                 coloureq = 0
             if coloureq > 255:
@@ -111,24 +97,30 @@ while running:
             j += 6
         i += 6
         j = 0
-    
 
-    # updaterar displayenMicrosoft.QuickAction.Bluetooth
+    for n in range(1, dictionary["numberofplanets"] + 1): #ritar planeterna
+        planet_draw(n, dictionary) 
+
+    # updaterar displayen
     pygame.display.flip()
-
-    #uträkningar
+    
+    #uträkningar för hur många gånger man ska räkna ut krafterna mellan planeterna
     for n in range(1, int(factorial/(1*(factorial2)) + 1)):
-        for t in range (n + 1, numberofplanets + 1):
+        for t in range (n + 1, dictionary["numberofplanets"] + 1):
             dictionary = planet_calc(dictionary, n, t)
-
-    for n in range(1, numberofplanets + 1):
+            print(f"{n}-{t}")
+    for n in range(1, dictionary["numberofplanets"] + 1):
         dictionary[f"p{n}x"] = dictionary[f"p{n}x"] + dictionary[f"p{n}speedx"] #ändrar positionen med farten
-        dictionary[f"p{n}y"] = dictionary[f"p{n}y"] + dictionary[f"p{n}speedy"]
+        dictionary[f"p{n}y"] = dictionary[f"p{n}y"] + dictionary[f"p{n}speedy"] 
 
-    for n in range(2, numberofplanets + 1):
-        dictionary[f"p{n}x"] = dictionary[f"p{n}x"] + screenwidth/2 - dictionary["p1x"]
+    for n in range(2, dictionary["numberofplanets"] + 1):
+        dictionary[f"p{n}x"] = dictionary[f"p{n}x"] + screenwidth/2 - dictionary["p1x"] #ändrar så att kameran är centrerad på planet 1
         dictionary[f"p{n}y"] = dictionary[f"p{n}y"] + screenheight/2 - dictionary["p1y"]
-    dictionary["p1x"] = screenwidth/2
+
+    pixelx = pixelx - dictionary["p1x"] #gör så att bakgrunden följer efter
+    pixely = pixely - dictionary["p1y"]
+
+    dictionary["p1x"] = screenwidth/2 #placerar planet 1 i mitten
     dictionary["p1y"] = screenheight/2
 
     # renderering
